@@ -4,10 +4,39 @@ import Link from "next/link";
 import Style from "@/app/ui/home.module.css";
 import { lusitana } from "@/app/ui/fonts";
 import Image from "next/image";
+import { neon } from '@neondatabase/serverless';
 
 export default function Page() {
+  async function create(formData: FormData) {
+    'use server';
+
+    const sql = neon(process.env.DATABASE_URL!);
+    const comment = formData.get('comment');
+
+    if (!comment || typeof comment !== 'string') return;
+
+    await sql`INSERT INTO comments (comment) VALUES (${comment})`;
+  }
+
   return (
     <main className="flex min-h-screen flex-col p-6">
+      {/* comment */}
+      <form action={create} className="mb-6 flex gap-2">
+        <input
+          type="text"
+          placeholder="write a comment"
+          name="comment"
+          className="border px-3 py-2 rounded w-full max-w-md"
+        />
+        <button
+          type="submit"
+          className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-400"
+        >
+          Submit
+        </button>
+      </form>
+
+      {/* เนื้อหา hero เดิม */}
       <div className={Style.shape}>
         <AcmeLogo />
       </div>
@@ -16,7 +45,7 @@ export default function Page() {
           <p
             className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`}
           >
-            <strong>Welcome to Acme.</strong> This is the example for the{" "}
+            <strong>Welcome to Acme.</strong> This is the example for the{' '}
             <a href="https://nextjs.org/learn/" className="text-blue-500">
               Next.js Learn Course
             </a>
@@ -30,7 +59,6 @@ export default function Page() {
           </Link>
         </div>
         <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
-          {/* Add Hero Images Here */}
           <Image
             src="/hero-desktop.png"
             width={1000}
