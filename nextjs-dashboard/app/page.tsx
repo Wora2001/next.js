@@ -5,6 +5,7 @@ import Style from "@/app/ui/home.module.css";
 import { lusitana } from "@/app/ui/fonts";
 import Image from "next/image";
 import { neon } from '@neondatabase/serverless';
+import { revalidatePath } from 'next/cache';
 
 export default function Page() {
   async function create(formData: FormData) {
@@ -16,6 +17,7 @@ export default function Page() {
     if (!comment || typeof comment !== 'string') return;
 
     await sql`INSERT INTO comments (comment) VALUES (${comment})`;
+    revalidatePath('/dashboard/customers');
   }
 
   return (

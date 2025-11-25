@@ -1,15 +1,12 @@
 import { neon } from '@neondatabase/serverless';
 
-export default async function Page() {
-  // เชื่อมต่อ Neon
-  const sql = neon(process.env.DATABASE_URL!);
+export const dynamic = 'force-dynamic';
+// หรือใช้ export const revalidate = 0;
 
-  // ดึง comment ทั้งหมด
-  const comments = await sql`
-    SELECT comment
-    FROM comments
-    ORDER BY comment ASC;
-  `;
+export default async function Page() {
+  const sql = neon(process.env.DATABASE_URL!);
+  const comments = await sql`SELECT comment FROM comments ORDER BY comment ASC;`;
+
 
   return (
     <div className="p-6">
